@@ -24,7 +24,7 @@ const globalStyles = StyleSheet.create({
         margin: 5,
         textAlign: 'center',
       },
-      add: {
+      button: {
         marginTop: 20,
         marginBottom: 10,
         marginHorizontal: "20%"

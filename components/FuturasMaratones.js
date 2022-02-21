@@ -1,18 +1,28 @@
-import React, {useState} from 'react';
-import {Text, View, FlatList, Modal} from 'react-native'
+import React, {useState,} from 'react';
+import {Text, View, FlatList, Modal, StyleSheet} from 'react-native'
 import {IconButton, Button,TextInput} from 'react-native-paper';
 import globalStyles from '../styles/styles'
+import Typography from '../constants/Typography';
 
-
-export default function FuturasMaratones() {
+export default function FuturasMaratones({user}) {
   const [name, setName] = useState('')
   const [more, setMore] = useState('')
   const [series, setSeries] = useState([])
   const [type, setSType] = useState('SERIE')
   const [itemSelected, setItemSelected] = useState({})
   const [modalVisible, setModalVisible] = useState(false)
+  const [buttonConfim, setButtonConfirm] = useState(false)
+  const [message, setMessage] = useState('')
+
 
   const addSerie = () => {
+    if(name == '' || more== '')
+    {
+      setMessage('Debe ingresar todos los campos')
+      setButtonConfirm(false)
+      setModalVisible(true)
+      return;
+    }
     setSeries([
       ...series,
       {
@@ -27,8 +37,10 @@ export default function FuturasMaratones() {
   }
 
   const handleOnDelete = (item) => () => {
-    setModalVisible(true)
+    setMessage('¿Está seguro que desea eliminar?')
+    setButtonConfirm(true)
     setItemSelected(item)
+    setModalVisible(true)
   }
 
   const handleConfirmDelete = () => {
@@ -40,7 +52,7 @@ export default function FuturasMaratones() {
 
   return (
     <View style={globalStyles.container}>
-      <Text style={globalStyles.title}>Futuras Maratones</Text>
+      <Text style={[globalStyles.title, style.fontTitle]}>Futuras Maratones de: {"\n"}{user}</Text>
       <View style={globalStyles.nuevaCont}>
       <View style={globalStyles.viewRow}>
         <Text style={globalStyles.textNew}>Nueva {type}</Text>
@@ -74,7 +86,7 @@ export default function FuturasMaratones() {
             style={globalStyles.input}
           />
         <Button
-          style={globalStyles.add}
+          style={globalStyles.button}
           color='#F5CB5C'
           mode="contained"
           onPress={addSerie}>
@@ -87,8 +99,8 @@ export default function FuturasMaratones() {
             <View style={globalStyles.item}>
                 <View style={globalStyles.viewRow}>
                 {item.type === 'SERIE' && (
-               <View>
-                <IconButton
+               <View style={style.columnCenter}>
+               <IconButton
                 icon="television"
                 color="#691CA4"
                 style={globalStyles.iconItem}
@@ -98,15 +110,15 @@ export default function FuturasMaratones() {
               </View>
                 )}
                 {item.type === 'PELICULA' && (
-               <View>
-                <IconButton
-                icon="movie-open-outline"
-                color="#691CA4"
-                style={globalStyles.iconItem}
-                size={30}
-                />
-                <Text style={{textAlign: 'center'}}>Pelicula</Text> 
-                    </View>
+               <View style={{justifyContent: 'start'}}>
+                  <IconButton
+                  icon="movie-open-outline"
+                  color="#691CA4"
+                  style={globalStyles.iconItem}
+                  size={30}
+                  />
+                  <Text>Pelicula</Text> 
+                </View>
                 )}
               <View style={globalStyles.textBox}>
                   <View style={globalStyles.viewRow}>
@@ -141,8 +153,10 @@ export default function FuturasMaratones() {
       visible={modalVisible}>
         <View style={globalStyles.modal}>
           <View>
-            <Text style={globalStyles.modalText} >¿Está seguro que desea eliminar?</Text>
+            <Text style={globalStyles.modalText} >{message}</Text>
+            {buttonConfim && (
             <Text style={globalStyles.modalItem} >{itemSelected.name}</Text>
+            )}
           </View>
           <View style={globalStyles.viewRow}>
               <Button
@@ -153,17 +167,28 @@ export default function FuturasMaratones() {
                 >
               CANCELAR
               </Button>
-              <Button
-              style={globalStyles.buttonModal}
-              color='#F5CB5C'
-              mode="contained"
-              onPress={handleConfirmDelete}
-              >
-              CONFIRMAR
-            </Button>
+              {buttonConfim && (
+                 <Button
+                 style={globalStyles.buttonModal}
+                 color='#F5CB5C'
+                 mode="contained"
+                 onPress={handleConfirmDelete}>
+                 CONFIRMAR
+               </Button>
+              )}
+             
           </View>
         </View>
       </Modal>
     </View>
   );
 }
+const style = StyleSheet.create({
+  fontTitle: {
+    fontFamily: Typography.titleFont,
+},
+columnCenter:{
+  alignContent: 'center',
+  alignItems: 'center',
+}
+})
