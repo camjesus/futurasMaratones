@@ -1,4 +1,4 @@
-import React, {useState,} from 'react';
+import React, {useState} from 'react';
 import {Text, View, FlatList, Modal, StyleSheet} from 'react-native'
 import {IconButton, Button,TextInput} from 'react-native-paper';
 import globalStyles from '../styles/styles'
@@ -13,7 +13,6 @@ export default function FuturasMaratones({user}) {
   const [modalVisible, setModalVisible] = useState(false)
   const [buttonConfim, setButtonConfirm] = useState(false)
   const [message, setMessage] = useState('')
-
 
   const addSerie = () => {
     if(name == '' || more== '')

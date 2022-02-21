@@ -1,3 +1,3 @@
 export default {
-    titleFont: 'Architects-Daughter',
+    titleFont: 'ArchitectsDaughter-Regular',
   }
