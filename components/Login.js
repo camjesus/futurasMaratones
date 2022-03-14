@@ -2,17 +2,18 @@ import React, {useState} from 'react';
 import {Text, View, StyleSheet, Modal} from 'react-native'
 import {Button,TextInput} from 'react-native-paper';
 import globalStyles from '../styles/styles'
+import {useDispatch } from 'react-redux';
+import {setName} from '../store/actions/name.action'
 
-export default function Login({setUserLogin}) {
-  const [userSelected, setUserSelected] = useState('')
+export default function Login({}) {
+  const dispatch = useDispatch();
   const [addUser, setAddUser] = useState('')
   const [modalVisibleL, setModalVisibleL] = useState(false)
 
   const handleSetUser = () => {
     if(addUser)
     {
-      setUserSelected(addUser)
-      setUserLogin(userSelected)
+      dispatch(setName(addUser));
     }else{
       setModalVisibleL(true);
     }
