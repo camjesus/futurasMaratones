@@ -1,19 +1,21 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Text, View, FlatList, Modal, StyleSheet} from 'react-native'
 import {IconButton, Button,TextInput} from 'react-native-paper';
 import globalStyles from '../styles/styles'
 import Typography from '../constants/Typography';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem, loadItems, deleteItem } from '../store/actions/item.action';
 
 export default function FuturasMaratones({user}) {
+  const dispatch = useDispatch()
   const [name, setName] = useState('')
   const [more, setMore] = useState('')
-  const [series, setSeries] = useState([])
-  const [type, setSType] = useState('SERIE')
+  const [type, setType] = useState('SERIE')
   const [itemSelected, setItemSelected] = useState({})
   const [modalVisible, setModalVisible] = useState(false)
   const [buttonConfim, setButtonConfirm] = useState(false)
   const [message, setMessage] = useState('')
-
+  const series = useSelector(state => state.items.items);
   const addSerie = () => {
     if(name == '' || more== '')
     {
@@ -22,18 +24,14 @@ export default function FuturasMaratones({user}) {
       setModalVisible(true)
       return;
     }
-    setSeries([
-      ...series,
-      {
-        id: Math.random().toString(),
-        name: name,
-        more: more,
-        type: type
-      },
-    ])
+    dispatch(addItem(type, name, more));
     setName('')
     setMore('')
   }
+
+  useEffect(() => {
+    dispatch(loadItems())
+}, [])
 
   const handleOnDelete = (item) => () => {
     setMessage('¿Está seguro que desea eliminar?')
@@ -44,7 +42,7 @@ export default function FuturasMaratones({user}) {
 
   const handleConfirmDelete = () => {
     const { id } = itemSelected
-    setSeries(series.filter(item => item.id !== id))
+    dispatch(deleteItem(id))
     setModalVisible(false)
     setItemSelected({})
   }
@@ -61,13 +59,13 @@ export default function FuturasMaratones({user}) {
                   color="#691CA4"
                   style={globalStyles.buttonType}
                   size={30}
-                  onPress={() => setSType('SERIE')}
+                  onPress={() => setType('SERIE')}
                 />
                 <IconButton
                   icon="movie-open-outline"
                   color="#691CA4"
                   style={globalStyles.buttonType}
-                  onPress={() => setSType('PELICULA')}
+                  onPress={() => setType('PELICULA')}
                   size={30}
                 />
            </View>
